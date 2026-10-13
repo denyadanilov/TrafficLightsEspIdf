@@ -1,18 +1,18 @@
 #include "toggle_switch.h"
 
-#include "interrupt.h"
-#include "pin.h"
-#include "utils.h"
+#include "adapter/interrupt.hpp"
+#include "adapter/utils.hpp"
+#include "esp_attr.h"
 
 toggle_switch *toggle_switch::instance = nullptr;
 
 toggle_switch::toggle_switch(uint8_t pin_index)
-    : pin_index(pin_index), current_state(switch_state::OFF) {}
+    : pin_index(pin_index), current_state(switch_state::OFF),
+      button_pin(pin_index, eaf::pin_mode::INPUT_PULLUP_MODE) {}
 
 void toggle_switch::init() {
   instance = this;
-  get_digital_pin(pin_index, INPUT_PULLUP_MODE);
-  attach_interrupt(pin_index, isr, FALLING_STATE);
+  eaf::attach_interrupt(pin_index, isr, eaf::voltage_state::FALLING_STATE);
 }
 
 switch_state toggle_switch::update() { return current_state; }

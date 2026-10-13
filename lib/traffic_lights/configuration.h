@@ -1,7 +1,7 @@
 #ifndef LIB_TRAFFIC_LIGHTS_CONFIGURATION_H
 #define LIB_TRAFFIC_LIGHTS_CONFIGURATION_H
 
-#include "utils.h"
+#include "adapter/utils.hpp"
 
 #define RED_PIN 18
 #define YELLOW_PIN 17

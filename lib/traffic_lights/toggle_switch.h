@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "adapter/pin.hpp"
+
 enum class switch_state { OFF, ON };
 
 // Flips its state on every falling edge of the button pin interrupt.
@@ -13,6 +15,7 @@ private:
 
   const uint8_t pin_index;
   volatile switch_state current_state;
+  eaf::pin button_pin;
 
 public:
   explicit toggle_switch(uint8_t pin_index);

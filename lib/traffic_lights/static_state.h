@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#include "pin.h"
+#include "adapter/pin.hpp"
 #include "state.h"
 
 class static_state : public state {
@@ -11,7 +11,7 @@ private:
   const uint8_t pin_index;
   const uint32_t duration_in_ms;
   uint32_t start_time_in_ms;
-  digital_pin_t pin;
+  eaf::pin pin;
 
 public:
   static_state(uint8_t pin_index, uint32_t duration_in_ms);
