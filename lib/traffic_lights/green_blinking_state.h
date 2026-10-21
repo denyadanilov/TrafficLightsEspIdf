@@ -1,10 +1,11 @@
 #ifndef LIB_TRAFFIC_LIGHTS_GREEN_BLINKING_STATE_H
 #define LIB_TRAFFIC_LIGHTS_GREEN_BLINKING_STATE_H
 
-#include "configuration.h"
 #include "adapter/pin.hpp"
-#include "state.h"
 #include "adapter/time.hpp"
+#include "configuration.h"
+#include "duration_counter/duration_counter.h"
+#include "state.h"
 
 class green_blinking_state : public state {
 private:
@@ -13,40 +14,18 @@ private:
       blink_cycle_duration_in_ms * GREEN_BLINK_NUMBER;
 
   eaf::pin green_pin;
-  uint32_t start_time_in_ms;
+  duration_counter::duration_counter counter;
+  void update_counter(unsigned long now);
 
 public:
-  green_blinking_state()
-      : green_pin(GREEN_PIN, eaf::pin_mode::OUTPUT_MODE), start_time_in_ms(0) {}
+  green_blinking_state() : green_pin(GREEN_PIN, eaf::pin_mode::OUTPUT_MODE) {}
 
   void init() override {}
 
-  void start() override {
-    green_pin.set_high();
-    start_time_in_ms = eaf::get_current_time_in_milliseconds();
-  }
+  void start() override;
 
-  void turn_off() override { green_pin.set_low(); }
+  void turn_off() override;
 
-  state_result update() override {
-    uint32_t current_time_in_ms =
-        eaf::get_current_time_in_milliseconds();
-    uint32_t elapsed_time_in_ms = current_time_in_ms - start_time_in_ms;
-
-    if (elapsed_time_in_ms >= total_blink_duration_in_ms) {
-      turn_off();
-      return state_result::COMPLETED;
-    }
-
-    if ((elapsed_time_in_ms % blink_cycle_duration_in_ms) <
-        GREEN_BLINK_DURATION_MS) {
-      green_pin.set_high();
-    } else {
-      green_pin.set_low();
-    }
-
-    return state_result::WAIT;
-  }
+  state_result update() override;
 };
-
 #endif // LIB_TRAFFIC_LIGHTS_GREEN_BLINKING_STATE_H
